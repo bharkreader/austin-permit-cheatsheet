@@ -84,7 +84,7 @@ secs=""
 for c,rows in data.items():
   trs="".join(f'<tr><td data-l="Project">{html.escape(P[i])}</td><td data-l="Permit?">{cell(p)}</td><td data-l="Fee">{cell(f,False)}</td><td data-l="Notes">{html.escape(n)}</td><td data-l="Wildfire (WUI)">{html.escape(WUI[c][i] if c in WUI else WUI_NOTE.get(c,''))}</td><td data-l="Source"><a href="{S[s]}" target="_blank" rel="noopener">city source</a><br><small>checked {D}</small></td></tr>' for i,(p,f,n,s) in enumerate(rows))
   secs+=f'<section id="{c.lower().replace(" ","-")}"><h2>{c}</h2>{('<p><b>Wildfire zone:</b> Over half of Austin is in a WUI zone (A, B or C). Check your address on the <a href="'+S['atx_wui']+'" target="_blank" rel="noopener">2024 WUI Code map</a>. WUI projects need residential plan review, exact product specs on plans, and two WUI inspections. Applies to permit applications on/after July 10, 2025; existing homes are not required to retrofit.</p>') if c=='Austin' else ''}<table><thead><tr><th>Project</th><th>Permit?</th><th>Fee</th><th>Notes</th><th>Wildfire (WUI) rules</th><th>Source</th></tr></thead><tbody>{trs}</tbody></table></section>'
-CHECKER="https://austin-wui-checker-619690353207.us-south1.run.app"
+CHECKER="https://check.txpermitguide.com"
 out=f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Austin-Area Permit Cheat Sheet: Austin, Round Rock, Pflugerville, Cedar Park</title>
 <meta name="description" content="Do you need a permit for a water heater, fence, deck, roof, solar or pool in the Austin area? Answers with links to city sources.">
