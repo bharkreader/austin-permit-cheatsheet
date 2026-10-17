@@ -15,6 +15,9 @@ S={
 "cp_need":"https://www.cedarparktexas.gov/DocumentCenter/View/1787/Do-I-Need-a-Permit-PDF",
 "cp_fees":"https://ecode360.com/38630398",
 }
+# Answers from city permit offices by email (no link given): shown as text instead of a link
+EMAIL={"pf_email":"City permit office email, Oct 16, 2026","cp_email":"City permit office email, Oct 16, 2026"}
+def src(s): return html.escape(EMAIL[s]) if s in EMAIL else f'<a href="{S[s]}" target="_blank" rel="noopener">city source</a><br><small>checked {D}</small>'
 C=None # check with city
 P=["Water heater","HVAC replacement","Roof replacement","Fence","Deck / patio cover","Shed / accessory building","Solar PV","In-ground pool","Electrical panel upgrade","Irrigation system"]
 # (permit, fee, note, source)  fee "n/a" when no permit
@@ -42,24 +45,24 @@ data={
  ("Yes","$50","Standalone electrical; upgrades need a torque letter with master electrician license #.","rr_std"),
  ("Yes","$50","Required for new systems on city water; repairs exempt unless the backflow device is replaced.","rr_home")],
 "Pflugerville":[
- (C,C,"Not itemized in the fee schedule.","pf_fees"),
- (C,C,"Fee schedule lists $60 per trade type, apparently when added to another permit; confirm for standalone.","pf_fees"),
+ ("Yes","$90","Total $90: $60 plumbing permit + $30 tech fee.","pf_email"),
+ ("Yes","$130","Total $130: $60 mechanical permit + $30 tech fee + $40 plan review.","pf_email"),
  ("Yes","$80","Residential re-roof listed in fee schedule.","pf_fees"),
- (C,C,"Not in fee schedule.","pf_fees"),
+ ("No","n/a","No permit required; follow the city fence ordinance.","pf_email"),
  ("Yes","$60","Residential deck & patio covers.","pf_fees"),
  ("Depends","$50–$65","Listed for accessory buildings over 200 sq ft ($50 portable, $65 permanent); detached garage $65. Smaller: check with city.","pf_fees"),
- (C,C,"Not in fee schedule.","pf_fees"),
+ ("Yes","$130","Total $130: $60 electrical permit + $30 tech fee + $40 plan review.","pf_email"),
  ("Yes","$158 / $204","$158 without heater, $204 with heater. Above-ground/hot tub $60.","pf_fees"),
- (C,C,"Not itemized in the fee schedule.","pf_fees"),
+ ("Yes","$90","Total $90: $60 electrical permit + $30 tech fee.","pf_email"),
  ("Yes","$70","Irrigation permit.","pf_fees")],
 "Cedar Park":[
  ("Yes","$50","Installing or replacing a water heater requires a permit; Water Heater Install/Changeout fee $50.","cp_fees"),
  ("Yes","$50","Installing or replacing heating/AC requires a permit; HVAC Changeout fee $50.","cp_fees"),
  ("Depends","n/a","Non-structural roof covering: no permit. Structural work: check with city.","cp_need"),
  ("No","n/a","No permit, but must follow fencing ordinance Sec. 14.07.007.","cp_need"),
- (C,C,"City publishes deck & patio guidance; requirement not confirmed.","cp_need"),
+ ("Yes","$25 + $0.10/sq ft","Deck and patio permit required: $25 plan review + $0.10 per sq ft permit fee.","cp_email"),
  ("Yes","$0.10/sq ft (min $35) + $25","Storage sheds need a permit; accessory structure fee $0.10/sq ft (min $35) + $25 plan review.","cp_fees"),
- ("Yes",C,"Solar panel installation requires a permit; fee not itemized in the ordinance.","cp_need"),
+ ("Yes","$25","Solar panel installation requires a permit; solar permit fee $25.","cp_email"),
  ("Yes","$250+","In-ground: building $100 + electrical $100 + plan review $50 (+$100 plumbing if gas heated).","cp_fees"),
  ("Yes","$25 / $40","Residential electrical service upgrade fee: $25 up to 100 A, $40 over 100 A.","cp_fees"),
  ("Yes","$25","Irrigation systems require a permit; residential fee $25.","cp_fees")],
@@ -82,7 +85,7 @@ def cell(v,cls=True):
   return f'<span class="tag {k}">{html.escape(v)}</span>' if cls and k else html.escape(v)
 secs=""
 for c,rows in data.items():
-  trs="".join(f'<tr><td data-l="Project">{html.escape(P[i])}</td><td data-l="Permit?">{cell(p)}</td><td data-l="Fee">{cell(f,False)}</td><td data-l="Notes">{html.escape(n)}</td><td data-l="Wildfire (WUI)">{html.escape(WUI[c][i] if c in WUI else WUI_NOTE.get(c,''))}</td><td data-l="Source"><a href="{S[s]}" target="_blank" rel="noopener">city source</a><br><small>checked {D}</small></td></tr>' for i,(p,f,n,s) in enumerate(rows))
+  trs="".join(f'<tr><td data-l="Project">{html.escape(P[i])}</td><td data-l="Permit?">{cell(p)}</td><td data-l="Fee">{cell(f,False)}</td><td data-l="Notes">{html.escape(n)}</td><td data-l="Wildfire (WUI)">{html.escape(WUI[c][i] if c in WUI else WUI_NOTE.get(c,''))}</td><td data-l="Source">{src(s)}</td></tr>' for i,(p,f,n,s) in enumerate(rows))
   secs+=f'<section id="{c.lower().replace(" ","-")}"><h2>{c}</h2>{('<p><b>Wildfire zone:</b> Over half of Austin is in a WUI zone (A, B or C). Check your address on the <a href="'+S['atx_wui']+'" target="_blank" rel="noopener">2024 WUI Code map</a>. WUI projects need residential plan review, exact product specs on plans, and two WUI inspections. Applies to permit applications on/after July 10, 2025; existing homes are not required to retrofit.</p>') if c=='Austin' else ''}<table><thead><tr><th>Project</th><th>Permit?</th><th>Fee</th><th>Notes</th><th>Wildfire (WUI) rules</th><th>Source</th></tr></thead><tbody>{trs}</tbody></table></section>'
 CHECKER="https://check.txpermitguide.com"
 out=f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
