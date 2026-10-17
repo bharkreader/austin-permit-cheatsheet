@@ -83,35 +83,126 @@ def cell(v,cls=True):
   if v is None: return '<span class="tag check">Check with city</span>'
   k={"Yes":"yes","No":"no","Depends":"dep"}.get(v,"")
   return f'<span class="tag {k}">{html.escape(v)}</span>' if cls and k else html.escape(v)
+import os,re
+BASE="https://txpermitguide.com"
+BUILD="2026-10-17"  # lastmod date for sitemap
+CHECKER="https://check.txpermitguide.com"
+BEACON="<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{\"token\": \"6d4910da73b54ea4af900760f5b52dc4\"}'></script>"
+CSLUG={c:c.lower().replace(" ","-") for c in data}
+PSLUG=["water-heater","hvac-replacement","roof-replacement","fence","deck-patio-cover","shed","solar-panels","in-ground-pool","electrical-panel-upgrade","irrigation-system"]
+PFOR=["a water heater replacement","an HVAC replacement","a roof replacement","a fence","a deck or patio cover","a shed or accessory building","solar panels","an in-ground pool","an electrical panel upgrade","an irrigation system"]
+CSS='''
+:root{--ink:#1f2a44;--muted:#5d6b85;--bg:#f4f6fb;--brand:#3b5bdb}*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+header{background:linear-gradient(135deg,#1f3a8a,#3b5bdb);color:#fff;padding:1.6rem 1rem 3.4rem}header div,main,footer{max-width:1040px;margin:0 auto}
+header h1{margin:0;font-size:1.6rem}header p{margin:.4rem 0 0;opacity:.9}header a{color:#fff}main{padding:0 1rem 1rem;margin-top:-2.4rem}footer{padding:0 1rem 2rem;color:var(--muted)}
+section,.card{background:#fff;border-radius:16px;box-shadow:0 6px 24px rgba(31,42,68,.09);padding:1.1rem 1.3rem 1.3rem;margin-bottom:1rem}
+.cta{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;justify-content:space-between;background:#fff3dc}.cta p{margin:0;color:#7a4a00}
+.btn{display:inline-block;font-weight:700;color:#fff;background:#c2410c;border-radius:12px;padding:.8rem 1.3rem;text-decoration:none}.btn:hover{background:#9a3412}
+.btn2{display:inline-block;font-weight:700;color:var(--brand);background:#fff;border:1.5px solid var(--brand);border-radius:12px;padding:.7rem 1.2rem;text-decoration:none;margin:.25rem .5rem .25rem 0}.btn2:hover{background:#eef1fd}
+.tests{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}.tests p{margin:0 1rem 0 0;font-weight:600}
+.disc{font-size:.9rem;color:var(--muted);background:#fff8ea;border-left:4px solid #f0a020;padding:.75rem 1rem;border-radius:8px}
+h2{margin:.2rem 0 .6rem}table{width:100%;border-collapse:collapse;font-size:.92rem}th,td{text-align:left;padding:.55rem;border-bottom:1px solid #e8ebf2;vertical-align:top}
+th{background:#eef1f8;color:#33415c}th:first-child{border-radius:10px 0 0 10px}th:last-child{border-radius:0 10px 10px 0}
+.tag{display:inline-block;padding:.12rem .55rem;border-radius:99px;font-size:.8rem;font-weight:700;white-space:nowrap}
+.yes{background:#e6f6ec;color:#185c36}.no{background:#eceffd;color:#2b3a8f}.dep{background:#fff3dc;color:#7a4a00}.check{background:#eef0f4;color:#5d6b85}
+a{color:var(--brand)}small{color:var(--muted)}nav a{margin-right:1rem;font-weight:600}
+dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:.4rem 1rem;margin:0}dl.facts dt{font-weight:700;color:var(--muted)}dl.facts dd{margin:0}
+ul.links{columns:2;padding-left:1.1rem}.crumbs{font-size:.9rem;opacity:.9;margin:0 0 .4rem}
+@media(max-width:720px){thead{display:none}tr{display:block;border-bottom:2px solid #e8ebf2;padding:.5rem 0}td{display:block;border:0;padding:.2rem 0}td::before{content:attr(data-l)": ";font-weight:700;color:var(--muted)}ul.links{columns:1}dl.facts{grid-template-columns:1fr}}
+'''
+DISC='<p class="disc"><b>Disclaimer:</b> This is a free informational summary, not legal or professional advice. Rules and fees change (most cities update fees each October) and depend on your exact address, scope, HOA, historic district or floodplain status. Fees shown are base permit fees only; plan review, technology or other fees may apply. Always confirm with your city\'s building department before starting work. Areas outside city limits (ETJ / unincorporated Travis or Williamson County) follow different rules.</p>'
+AUSTIN_WUI='<p><b>Wildfire zone:</b> Over half of Austin is in a WUI zone (A, B or C). Check your address on the <a href="'+S['atx_wui']+'" target="_blank" rel="noopener">2024 WUI Code map</a>. WUI projects need residential plan review, exact product specs on plans, and two WUI inspections. Applies to permit applications on/after July 10, 2025; existing homes are not required to retrofit.</p>'
+TESTS='<div class="card tests"><p>Planning this project?</p><a class="btn2" href="/quotes/">Get quotes from local pros</a><a class="btn2" href="/hoa/">Need HOA approval too?</a></div>'
+WUICTA=f'<div class="card cta"><p><b>🔥 Is your address in Austin\'s wildfire zone?</b><br>Check your address and see the WUI rules and fees for your project.</p><a class="btn" href="{CHECKER}">Is your address in Austin\'s wildfire zone?</a></div>'
+FOOT=f'<footer><small>Sources last checked {D}. Found an error? <a href="https://github.com/bharkreader/austin-permit-cheatsheet/issues">Open an issue</a>. Not affiliated with any city.</small></footer>'
+e=html.escape
+def page(title,desc,path,body,head_extra="",robots=None):
+  canon=BASE+path
+  r=f'<meta name="robots" content="{robots}">' if robots else ''
+  return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{e(title)}</title>
+<meta name="description" content="{e(desc)}">{r}
+<link rel="canonical" href="{canon}">
+<style>{CSS}</style>{head_extra}</head><body>
+{body}
+{FOOT}{BEACON}</body></html>'''
+def write(path,s):
+  fn=path.strip("/")+"/index.html" if path!="/" else "index.html"
+  d=os.path.dirname(fn)
+  if d: os.makedirs(d,exist_ok=True)
+  open(fn,"w").write(s)
+def fee_txt(f): return "Check with city" if f is None else f
+def short(p):
+  return {"Yes":"Yes, a permit is required.","No":"No permit is required, with the conditions in the notes.","Depends":"It depends on the details in the notes.",None:"Check with city: we couldn't find a clear answer on the city pages we checked."}[p]
+def ld(o): return '<script type="application/ld+json">'+json.dumps(o,ensure_ascii=False).replace("</","<\\/")+'</script>'
+def qpath(c,i): return f"/{CSLUG[c]}/{PSLUG[i]}/"
+def qtitle(c,i): return f"Do I need a permit for {PFOR[i]} in {c}, TX?"
+
+# main page
 secs=""
 for c,rows in data.items():
-  trs="".join(f'<tr><td data-l="Project">{html.escape(P[i])}</td><td data-l="Permit?">{cell(p)}</td><td data-l="Fee">{cell(f,False)}</td><td data-l="Notes">{html.escape(n)}</td><td data-l="Wildfire (WUI)">{html.escape(WUI[c][i] if c in WUI else WUI_NOTE.get(c,''))}</td><td data-l="Source">{src(s)}</td></tr>' for i,(p,f,n,s) in enumerate(rows))
-  secs+=f'<section id="{c.lower().replace(" ","-")}"><h2>{c}</h2>{('<p><b>Wildfire zone:</b> Over half of Austin is in a WUI zone (A, B or C). Check your address on the <a href="'+S['atx_wui']+'" target="_blank" rel="noopener">2024 WUI Code map</a>. WUI projects need residential plan review, exact product specs on plans, and two WUI inspections. Applies to permit applications on/after July 10, 2025; existing homes are not required to retrofit.</p>') if c=='Austin' else ''}<table><thead><tr><th>Project</th><th>Permit?</th><th>Fee</th><th>Notes</th><th>Wildfire (WUI) rules</th><th>Source</th></tr></thead><tbody>{trs}</tbody></table></section>'
-CHECKER="https://check.txpermitguide.com"
-out=f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Austin-Area Permit Cheat Sheet: Austin, Round Rock, Pflugerville, Cedar Park</title>
-<meta name="description" content="Do you need a permit for a water heater, fence, deck, roof, solar or pool in the Austin area? Answers with links to city sources.">
-<style>
-:root{{--ink:#1f2a44;--muted:#5d6b85;--bg:#f4f6fb;--brand:#3b5bdb}}*{{box-sizing:border-box}}
-body{{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg)}}
-header{{background:linear-gradient(135deg,#1f3a8a,#3b5bdb);color:#fff;padding:1.6rem 1rem 3.4rem}}header div,main,footer{{max-width:1040px;margin:0 auto}}
-header h1{{margin:0;font-size:1.6rem}}header p{{margin:.4rem 0 0;opacity:.9}}main{{padding:0 1rem 1rem;margin-top:-2.4rem}}footer{{padding:0 1rem 2rem;color:var(--muted)}}
-section,.card{{background:#fff;border-radius:16px;box-shadow:0 6px 24px rgba(31,42,68,.09);padding:1.1rem 1.3rem 1.3rem;margin-bottom:1rem}}
-.cta{{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;justify-content:space-between;background:#fff3dc}}.cta p{{margin:0;color:#7a4a00}}
-.btn{{display:inline-block;font-weight:700;color:#fff;background:#c2410c;border-radius:12px;padding:.8rem 1.3rem;text-decoration:none}}.btn:hover{{background:#9a3412}}
-.disc{{font-size:.9rem;color:var(--muted);background:#fff8ea;border-left:4px solid #f0a020;padding:.75rem 1rem;border-radius:8px}}
-h2{{margin:.2rem 0 .6rem}}table{{width:100%;border-collapse:collapse;font-size:.92rem}}th,td{{text-align:left;padding:.55rem;border-bottom:1px solid #e8ebf2;vertical-align:top}}
-th{{background:#eef1f8;color:#33415c}}th:first-child{{border-radius:10px 0 0 10px}}th:last-child{{border-radius:0 10px 10px 0}}
-.tag{{display:inline-block;padding:.12rem .55rem;border-radius:99px;font-size:.8rem;font-weight:700;white-space:nowrap}}
-.yes{{background:#e6f6ec;color:#185c36}}.no{{background:#eceffd;color:#2b3a8f}}.dep{{background:#fff3dc;color:#7a4a00}}.check{{background:#eef0f4;color:#5d6b85}}
-a{{color:var(--brand)}}small{{color:var(--muted)}}nav a{{margin-right:1rem;font-weight:600}}
-@media(max-width:720px){{thead{{display:none}}tr{{display:block;border-bottom:2px solid #e8ebf2;padding:.5rem 0}}td{{display:block;border:0;padding:.2rem 0}}td::before{{content:attr(data-l)": ";font-weight:700;color:var(--muted)}}}}
-</style></head><body>
-<header><div><h1>Austin-Area Residential Permit Cheat Sheet</h1>
+  trs="".join(f'<tr><td data-l="Project"><a href="{qpath(c,i)}">{e(P[i])}</a></td><td data-l="Permit?">{cell(p)}</td><td data-l="Fee">{cell(f,False)}</td><td data-l="Notes">{e(n)}</td><td data-l="Wildfire (WUI)">{e(WUI[c][i] if c in WUI else WUI_NOTE.get(c,""))}</td><td data-l="Source">{src(s)}</td></tr>' for i,(p,f,n,s) in enumerate(rows))
+  secs+=f'<section id="{CSLUG[c]}"><h2>{c}</h2>{AUSTIN_WUI if c=="Austin" else ""}<table><thead><tr><th>Project</th><th>Permit?</th><th>Fee</th><th>Notes</th><th>Wildfire (WUI) rules</th><th>Source</th></tr></thead><tbody>{trs}</tbody></table></section>'
+body=f'''<header><div><h1>Austin-Area Residential Permit Cheat Sheet</h1>
 <p>Do you need a permit for common home projects in <b>Austin, Round Rock, Pflugerville and Cedar Park</b>? Every answer links to the city source it came from. Where we couldn't find a clear answer, it says <b>Check with city</b>.</p></div></header>
-<main><div class="card cta"><p><b>🔥 Is your address in Austin's wildfire zone?</b><br>Check your address and see the WUI rules and fees for your project.</p><a class="btn" href="{CHECKER}">Is your address in Austin's wildfire zone?</a></div>
-<div class="card"><nav>{''.join(f'<a href="#{c.lower().replace(' ','-')}">{c}</a>' for c in data)}</nav>
-<p class="disc"><b>Disclaimer:</b> This is a free informational summary, not legal or professional advice. Rules and fees change (most cities update fees each October) and depend on your exact address, scope, HOA, historic district or floodplain status. Fees shown are base permit fees only; plan review, technology or other fees may apply. Always confirm with your city's building department before starting work. Areas outside city limits (ETJ / unincorporated Travis or Williamson County) follow different rules.</p></div>
-{secs}</main>
-<footer><small>Sources last checked {D}. Found an error? <a href="https://github.com/bharkreader/austin-permit-cheatsheet/issues">Open an issue</a>. Not affiliated with any city.</small></footer><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "6d4910da73b54ea4af900760f5b52dc4"}}'></script></body></html>'''
-open("index.html","w").write(out)
+<main>{WUICTA}
+{TESTS}
+<div class="card"><nav>{"".join(f'<a href="#{CSLUG[c]}">{c}</a>' for c in data)}</nav>
+{DISC}</div>
+{secs}</main>'''
+write("/",page("Austin-Area Permit Cheat Sheet: Austin, Round Rock, Pflugerville, Cedar Park","Do you need a permit for a water heater, fence, deck, roof, solar or pool in the Austin area? Answers with links to city sources.","/",body))
+
+# question pages
+urls=["/"]; llms=[]; faq_n=0; gaps=[]
+for c,rows in data.items():
+  for i,(p,f,n,s) in enumerate(rows):
+    path=qpath(c,i); t=qtitle(c,i); urls.append(path)
+    wui=WUI[c][i] if c in WUI else WUI_NOTE.get(c,"")
+    ans=short(p)
+    SD={"Yes":"Yes, a permit is required","No":"No permit required (see conditions)","Depends":"It depends on the details",None:"Check with city"}[p]
+    desc=f"{P[i]} permit in {c}, TX: {SD}. Base fee: {fee_txt(f)}. {"Source: city permit office email, Oct 16, 2026." if s in EMAIL else "With the city source link, checked "+D+"."}"
+    if p is None or f is None: gaps.append(f"{c} / {P[i]}: " + ", ".join(x for x,v in (("permit",p),("fee",f)) if v is None))
+    lds=[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Permit cheat sheet","item":BASE+"/"},
+      {"@type":"ListItem","position":2,"name":c,"item":BASE+"/#"+CSLUG[c]},
+      {"@type":"ListItem","position":3,"name":P[i],"item":BASE+path}]}]
+    if p is not None:
+      faq_n+=1
+      lds.append({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":t,
+        "acceptedAnswer":{"@type":"Answer","text":f"{ans} {n} Base permit fee: {fee_txt(f)}. Source: {EMAIL[s] if s in EMAIL else S[s]+" (checked "+D+")"}. Informational only; confirm with the City of {c} before starting work."}}]})
+    others="".join(f'<li><a href="{qpath(c2,i)}">{e(P[i])} in {c2}</a></li>' for c2 in data if c2!=c)
+    more="".join(f'<li><a href="{qpath(c,j)}">{e(P[j])}</a></li>' for j in range(len(P)) if j!=i)
+    aus=(AUSTIN_WUI+f'<p><a class="btn" href="{CHECKER}">Check your Austin address for wildfire (WUI) rules</a></p>') if c=="Austin" else ""
+    body=f'''<header><div><p class="crumbs"><a href="/">Permit cheat sheet</a> › <a href="/#{CSLUG[c]}">{c}</a> › {e(P[i])}</p><h1>{e(t)}</h1>
+<p>Short answer for {c}, Texas, with its source.</p></div></header>
+<main><section><h2>Answer</h2><p>{cell(p)} {e(ans)}</p>
+<dl class="facts"><dt>Permit required?</dt><dd>{cell(p)}</dd><dt>Base permit fee</dt><dd>{e(fee_txt(f))}</dd><dt>Notes</dt><dd>{e(n)}</dd>
+<dt>Source</dt><dd>{e(EMAIL[s]) if s in EMAIL else f'<a href="{S[s]}" target="_blank" rel="noopener">{e(S[s])}</a><br><small>checked {D}</small>'}</dd></dl></section>
+<section><h2>Wildfire (WUI) rules</h2><p>{e(wui) if wui else "Check with city"}</p>{aus}</section>
+{TESTS}
+<div class="card">{DISC}<p><a href="/#{CSLUG[c]}">← See all {c} projects in the main permit table</a></p></div>
+<section><h2>{e(P[i])} in other cities</h2><ul class="links">{others}</ul><h2>Other projects in {c}</h2><ul class="links">{more}</ul></section></main>'''
+    write(path,page(t+" | Texas Permit Guide",desc,path,body,"".join(ld(x) for x in lds)))
+    llms.append(f"- [{t}]({BASE}{path}): {('Check with city' if p is None else p)}; fee {fee_txt(f)}")
+
+# click-test pages (no forms, no email collection)
+for path,t,msg in [("/quotes/","Get quotes from local pros (coming soon)","We're looking at adding a way to get quotes from local contractors for permit-required projects. It isn't available yet."),
+                   ("/hoa/","Need HOA approval too? (coming soon)","Many Austin-area neighborhoods also need HOA architectural approval before you build. We're looking at adding help with that. It isn't available yet.")]:
+  body=f'''<header><div><p class="crumbs"><a href="/">Permit cheat sheet</a></p><h1>{e(t)}</h1></div></header>
+<main><section><p>{e(msg)}</p><p>Thanks for checking. Your visit helps us decide what to build next.</p><p><a href="/">← Back to the permit cheat sheet</a></p></section></main>'''
+  write(path,page(t+" | Texas Permit Guide",msg,path,body,robots="noindex"))
+
+# sitemap + robots
+sm='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(f"  <url><loc>{BASE}{u}</loc><lastmod>{BUILD}</lastmod></url>\n" for u in urls)+"</urlset>\n"
+open("sitemap.xml","w").write(sm)
+open("robots.txt","w").write(f"User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n")
+
+# llms.txt: regenerate the "Question pages" block, keep the rest as written
+L=open("llms.txt").read()
+L=re.sub(r"## Question pages\n.*?(?=## City sources)","",L,flags=re.S)
+block="## Question pages\n\nOne page per city and project, generated from the same data as the main table.\n\n"+"\n".join(llms)+"\n\n"
+L=L.replace("## City sources",block+"## City sources",1)
+open("llms.txt","w").write(L)
+print(json.dumps({"question_pages":len(llms),"faq_pages":faq_n,"sitemap_urls":len(urls),"gaps":len(gaps)}))
+for g in gaps: print("GAP",g)
