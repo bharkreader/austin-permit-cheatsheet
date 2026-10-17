@@ -1,0 +1,36 @@
+# Texas Permit Guide (Austin-Area Residential Permit Cheat Sheet)
+
+> Free summary of whether common home projects need a building permit in Austin, Round Rock, Pflugerville and Cedar Park, Texas, with base permit fees, wildfire (WUI) code rules, and a link to the city source for every answer. Sources last checked Oct 15, 2026. Informational only, not legal advice; confirm with the city before starting work.
+
+Projects covered for each city: water heater, HVAC replacement, roof replacement, fence, deck / patio cover, shed / accessory building, solar PV, in-ground pool, electrical panel upgrade, irrigation system. Where no clear city answer was found, the sheet says "Check with city" instead of guessing. Fees are base permit fees only; plan review, technology or other fees may apply, and most cities update fees each October. Areas outside city limits (ETJ / unincorporated Travis or Williamson County) follow different rules.
+
+Key facts:
+- Austin: over half the city is in a Wildland-Urban Interface (WUI) zone (A, B or C). WUI rules apply to permit applications on or after July 10, 2025; existing homes are not required to retrofit. WUI projects need residential plan review, product specs on plans, and two WUI inspections.
+- Round Rock, Pflugerville and Cedar Park: no city WUI code found.
+
+## Pages
+
+- [Permit cheat sheet (all four cities)](https://txpermitguide.com/): Table per city with permit yes/no/depends, fee, notes, WUI rules and source link
+- [Austin section](https://txpermitguide.com/#austin)
+- [Round Rock section](https://txpermitguide.com/#round-rock)
+- [Pflugerville section](https://txpermitguide.com/#pflugerville)
+- [Cedar Park section](https://txpermitguide.com/#cedar-park)
+- [Austin wildfire (WUI) zone address checker](https://check.txpermitguide.com): Enter an Austin address to see its WUI zone and the rules and fees for a project
+
+## City sources
+
+- [Austin residential fee schedule](https://austin.widen.net/s/fz9rhwg8qq/fees_residential)
+- [Austin types of permits](https://www.austintexas.gov/development-services/types-permits)
+- [Austin work exempt from building permits](https://www.austintexas.gov/development-services/work-exempt-building-permits)
+- [Austin express permits](https://www.austintexas.gov/development-services/express-permits)
+- [Austin Wildland-Urban Interface code](https://www.austintexas.gov/fire/wildland-urban-interface-code)
+- [Round Rock homeowner projects](https://www.roundrocktexas.gov/city-departments/planning-and-development-services/building-inspection/homeowner-projects/)
+- [Round Rock standalone building permits](https://www.roundrocktexas.gov/city-departments/planning-and-development-services/building-inspection/standalone-building-permits/)
+- [Round Rock miscellaneous building permits](https://www.roundrocktexas.gov/city-departments/planning-and-development-services/building-inspection/miscellaneous-building-permits/)
+- [Pflugerville fee schedule](https://www.pflugervilletx.gov/asset/25ed7379-981a-41fc-8950-14df8f9d01dd)
+- [Cedar Park "Do I Need a Permit?"](https://www.cedarparktexas.gov/DocumentCenter/View/1787/Do-I-Need-a-Permit-PDF)
+- [Cedar Park code of ordinances](https://ecode360.com/38630398)
+
+## Optional
+
+- [Report an error](https://github.com/bharkreader/austin-permit-cheatsheet/issues)
