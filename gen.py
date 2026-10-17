@@ -110,5 +110,5 @@ a{{color:var(--brand)}}small{{color:var(--muted)}}nav a{{margin-right:1rem;font-
 <div class="card"><nav>{''.join(f'<a href="#{c.lower().replace(' ','-')}">{c}</a>' for c in data)}</nav>
 <p class="disc"><b>Disclaimer:</b> This is a free informational summary, not legal or professional advice. Rules and fees change (most cities update fees each October) and depend on your exact address, scope, HOA, historic district or floodplain status. Fees shown are base permit fees only; plan review, technology or other fees may apply. Always confirm with your city's building department before starting work. Areas outside city limits (ETJ / unincorporated Travis or Williamson County) follow different rules.</p></div>
 {secs}</main>
-<footer><small>Sources last checked {D}. Found an error? <a href="https://github.com/bharkreader/austin-permit-cheatsheet/issues">Open an issue</a>. Not affiliated with any city.</small></footer></body></html>'''
+<footer><small>Sources last checked {D}. Found an error? <a href="https://github.com/bharkreader/austin-permit-cheatsheet/issues">Open an issue</a>. Not affiliated with any city.</small></footer><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "6d4910da73b54ea4af900760f5b52dc4"}}'></script></body></html>'''
 open("index.html","w").write(out)
