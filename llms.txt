@@ -1,8 +1,8 @@
 # Texas Permit Guide (Austin-Area Residential Permit Cheat Sheet)
 
-> Free summary of whether common home projects need a building permit in Austin, Round Rock, Pflugerville and Cedar Park, Texas, with base permit fees, wildfire (WUI) code rules, and a link to the city source for every answer. Sources last checked Oct 15, 2026. Informational only, not legal advice; confirm with the city before starting work.
+> Free summary of whether common home projects need a building permit in Austin, Round Rock, Pflugerville and Cedar Park, Texas, with permit fees, wildfire (WUI) code rules, and the city source for every answer (a link, or a dated city permit office email). Sources last checked Oct 15, 2026. Informational only, not legal advice; confirm with the city before starting work.
 
-Projects covered for each city: water heater, HVAC replacement, roof replacement, fence, deck / patio cover, shed / accessory building, solar PV, in-ground pool, electrical panel upgrade, irrigation system. Where no clear city answer was found, the sheet says "Check with city" instead of guessing. Fees are base permit fees only; plan review, technology or other fees may apply, and most cities update fees each October. Areas outside city limits (ETJ / unincorporated Travis or Williamson County) follow different rules.
+Projects covered for each city: water heater, HVAC replacement, roof replacement, fence, deck / patio cover, shed / accessory building, solar PV, in-ground pool, electrical panel upgrade, irrigation system. Where no clear city answer was found, the sheet says "Check with city" instead of guessing. Fees are base permit fees unless the notes list extra charges (like tech or plan-review fees). Most cities update fees each October; always confirm with the city. Areas outside city limits (ETJ / unincorporated Travis or Williamson County) follow different rules.
 
 Key facts:
 - Austin: over half the city is in a Wildland-Urban Interface (WUI) zone (A, B or C). WUI rules apply to permit applications on or after July 10, 2025; existing homes are not required to retrofit. WUI projects need residential plan review, product specs on plans, and two WUI inspections.

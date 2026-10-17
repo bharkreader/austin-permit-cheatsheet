@@ -111,7 +111,7 @@ dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:.4rem 1rem;margi
 ul.links{columns:2;padding-left:1.1rem}.crumbs{font-size:.9rem;opacity:.9;margin:0 0 .4rem}
 @media(max-width:720px){thead{display:none}tr{display:block;border-bottom:2px solid #e8ebf2;padding:.5rem 0}td{display:block;border:0;padding:.2rem 0}td::before{content:attr(data-l)": ";font-weight:700;color:var(--muted)}ul.links{columns:1}dl.facts{grid-template-columns:1fr}}
 '''
-DISC='<p class="disc"><b>Disclaimer:</b> This is a free informational summary, not legal or professional advice. Rules and fees change (most cities update fees each October) and depend on your exact address, scope, HOA, historic district or floodplain status. Fees shown are base permit fees only; plan review, technology or other fees may apply. Always confirm with your city\'s building department before starting work. Areas outside city limits (ETJ / unincorporated Travis or Williamson County) follow different rules.</p>'
+DISC='<p class="disc"><b>Disclaimer:</b> This is a free informational summary, not legal or professional advice. Rules and fees change (most cities update fees each October) and depend on your exact address, scope, HOA, historic district or floodplain status. Fees are base permit fees unless the notes list extra charges (like tech or plan-review fees). Always confirm with your city\'s building department before starting work. Areas outside city limits (ETJ / unincorporated Travis or Williamson County) follow different rules.</p>'
 AUSTIN_WUI='<p><b>Wildfire zone:</b> Over half of Austin is in a WUI zone (A, B or C). Check your address on the <a href="'+S['atx_wui']+'" target="_blank" rel="noopener">2024 WUI Code map</a>. WUI projects need residential plan review, exact product specs on plans, and two WUI inspections. Applies to permit applications on/after July 10, 2025; existing homes are not required to retrofit.</p>'
 TESTS='<div class="card tests"><p>Planning this project?</p><a class="btn2" href="/quotes/">Get quotes from local pros</a><a class="btn2" href="/hoa/">Need HOA approval too?</a></div>'
 WUICTA=f'<div class="card cta"><p><b>🔥 Is your address in Austin\'s wildfire zone?</b><br>Check your address and see the WUI rules and fees for your project.</p><a class="btn" href="{CHECKER}">Is your address in Austin\'s wildfire zone?</a></div>'
@@ -145,7 +145,7 @@ for c,rows in data.items():
   trs="".join(f'<tr><td data-l="Project"><a href="{qpath(c,i)}">{e(P[i])}</a></td><td data-l="Permit?">{cell(p)}</td><td data-l="Fee">{cell(f,False)}</td><td data-l="Notes">{e(n)}</td><td data-l="Wildfire (WUI)">{e(WUI[c][i] if c in WUI else WUI_NOTE.get(c,""))}</td><td data-l="Source">{src(s)}</td></tr>' for i,(p,f,n,s) in enumerate(rows))
   secs+=f'<section id="{CSLUG[c]}"><h2>{c}</h2>{AUSTIN_WUI if c=="Austin" else ""}<table><thead><tr><th>Project</th><th>Permit?</th><th>Fee</th><th>Notes</th><th>Wildfire (WUI) rules</th><th>Source</th></tr></thead><tbody>{trs}</tbody></table></section>'
 body=f'''<header><div><h1>Austin-Area Residential Permit Cheat Sheet</h1>
-<p>Do you need a permit for common home projects in <b>Austin, Round Rock, Pflugerville and Cedar Park</b>? Every answer links to the city source it came from. Where we couldn't find a clear answer, it says <b>Check with city</b>.</p></div></header>
+<p>Do you need a permit for common home projects in <b>Austin, Round Rock, Pflugerville and Cedar Park</b>? Every answer cites the city source it came from. Where we couldn't find a clear answer, it says <b>Check with city</b>.</p></div></header>
 <main>{WUICTA}
 {TESTS}
 <div class="card"><nav>{"".join(f'<a href="#{CSLUG[c]}">{c}</a>' for c in data)}</nav>
@@ -161,7 +161,7 @@ for c,rows in data.items():
     wui=WUI[c][i] if c in WUI else WUI_NOTE.get(c,"")
     ans=short(p)
     SD={"Yes":"Yes, a permit is required","No":"No permit required (see conditions)","Depends":"It depends on the details",None:"Check with city"}[p]
-    desc=f"{P[i]} permit in {c}, TX: {SD}. Base fee: {fee_txt(f)}. {"Source: city permit office email, Oct 16, 2026." if s in EMAIL else "With the city source link, checked "+D+"."}"
+    desc=f"{P[i]} permit in {c}, TX: {SD}. Fee: {fee_txt(f)}. {"Source: city permit office email, Oct 16, 2026." if s in EMAIL else "With the city source link, checked "+D+"."}"
     if p is None or f is None: gaps.append(f"{c} / {P[i]}: " + ", ".join(x for x,v in (("permit",p),("fee",f)) if v is None))
     lds=[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
       {"@type":"ListItem","position":1,"name":"Permit cheat sheet","item":BASE+"/"},
@@ -170,14 +170,14 @@ for c,rows in data.items():
     if p is not None:
       faq_n+=1
       lds.append({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":t,
-        "acceptedAnswer":{"@type":"Answer","text":f"{ans} {n} Base permit fee: {fee_txt(f)}. Source: {EMAIL[s] if s in EMAIL else S[s]+" (checked "+D+")"}. Informational only; confirm with the City of {c} before starting work."}}]})
+        "acceptedAnswer":{"@type":"Answer","text":f"{ans} {n} Permit fee: {fee_txt(f)}. Source: {EMAIL[s] if s in EMAIL else S[s]+" (checked "+D+")"}. Informational only; confirm with the City of {c} before starting work."}}]})
     others="".join(f'<li><a href="{qpath(c2,i)}">{e(P[i])} in {c2}</a></li>' for c2 in data if c2!=c)
     more="".join(f'<li><a href="{qpath(c,j)}">{e(P[j])}</a></li>' for j in range(len(P)) if j!=i)
     aus=(AUSTIN_WUI+f'<p><a class="btn" href="{CHECKER}">Check your Austin address for wildfire (WUI) rules</a></p>') if c=="Austin" else ""
     body=f'''<header><div><p class="crumbs"><a href="/">Permit cheat sheet</a> › <a href="/#{CSLUG[c]}">{c}</a> › {e(P[i])}</p><h1>{e(t)}</h1>
 <p>Short answer for {c}, Texas, with its source.</p></div></header>
 <main><section><h2>Answer</h2><p>{cell(p)} {e(ans)}</p>
-<dl class="facts"><dt>Permit required?</dt><dd>{cell(p)}</dd><dt>Base permit fee</dt><dd>{e(fee_txt(f))}</dd><dt>Notes</dt><dd>{e(n)}</dd>
+<dl class="facts"><dt>Permit required?</dt><dd>{cell(p)}</dd><dt>Permit fee</dt><dd>{e(fee_txt(f))}</dd><dt>Notes</dt><dd>{e(n)}</dd>
 <dt>Source</dt><dd>{e(EMAIL[s]) if s in EMAIL else f'<a href="{S[s]}" target="_blank" rel="noopener">{e(S[s])}</a><br><small>checked {D}</small>'}</dd></dl></section>
 <section><h2>Wildfire (WUI) rules</h2><p>{e(wui) if wui else "Check with city"}</p>{aus}</section>
 {TESTS}
