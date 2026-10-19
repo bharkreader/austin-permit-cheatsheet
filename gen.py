@@ -16,23 +16,23 @@ S={
 "cp_fees":"https://ecode360.com/38630398",
 }
 # Answers from city permit offices by email (no link given): shown as text instead of a link
-EMAIL={"pf_email":"City permit office email, Oct 16, 2026","cp_email":"City permit office email, Oct 16, 2026"}
+EMAIL={"pf_email":"City permit office email, Oct 16, 2026","cp_email":"City permit office email, Oct 16, 2026","atx_chat":"City of Austin permit live chat, Oct 19, 2026"}
 def src(s): return html.escape(EMAIL[s]) if s in EMAIL else f'<a href="{S[s]}" target="_blank" rel="noopener">city source</a><br><small>checked {D}</small>'
 C=None # check with city
 P=["Water heater","HVAC replacement","Roof replacement","Fence","Deck / patio cover","Shed / accessory building","Solar PV","In-ground pool","Electrical panel upgrade","Irrigation system"]
 # (permit, fee, note, source)  fee "n/a" when no permit
 data={
 "Austin":[
- ("Yes",C,"Done under a stand-alone Plumbing Change Out permit (fee schedule's Change-Out Program lists water heaters). Contractor must be registered with the city.","atx_types"),
+ ("Yes","About $74","Done under a stand-alone Plumbing Change Out permit; city permit staff said stand-alone water heater change-out permits are about $74. Contractor must be registered with the city.","atx_chat"),
  ("Yes","$74.05","Mechanical Change Out stand-alone permit: $74.05 first system, $20.69 each additional (FY26-27).","atx_res_pdf"),
  ("Depends","$112.76 + $72.96","Permit if replacing >128 sq ft of decking, or >50% of roof in Wildland-Urban Interface area; some shingle replacements are exempt. Express review $112.76 + inspection $72.96.","atx_express"),
- ("Depends","$146.15","Exempt-work page says up to 7 ft; Types of Permits page says permit if in flood hazard area or over 8 ft (pages conflict, so confirm). Small-project review $146.15.","atx_types"),
+ ("Depends","$146.15","City Residential Plan Review staff said no permit is needed for a fence 8 ft or less that isn't in a floodplain, and code doesn't allow fences over 8 ft. (The Work Exempt page still says 7 ft.) Small-project review $146.15 if a permit is needed.","atx_chat"),
  ("Yes",C,"Uncovered deck listed under Residential Building Permit.","atx_types"),
  ("Depends",C,"Exempt if one story, ≤200 sq ft, ≤15 ft tall, no plumbing, not a dwelling, not in flood hazard area.","atx_exempt"),
  ("Yes","$53.56 + $169.83 + $84.92","Electrical Auxiliary Power/Solar permit. Intake $53.56, Austin Energy electrical base $169.83, inspection $84.92 (1–50 kW).","atx_res_pdf"),
  ("Yes","$146.15+","Residential building permit; small-project plan review $146.15 plus trade/inspection fees.","atx_res_pdf"),
- (C,C,"Not specifically addressed on the city pages we checked.","atx_types"),
- ("Yes",C,"Stand-alone Plumbing Irrigation permit (registered contractor).","atx_types")],
+ ("Yes","$73.81 + about $220","Permit required: a Repair permit for a like-for-like breaker panel swap, or an Upgrade permit if upgrading. Permit fee $73.81. Upgrades on Austin Energy service also need an ESPA, with Austin Energy fees of about $220.","atx_chat"),
+ ("Yes","About $74","Stand-alone Plumbing Irrigation permit (registered contractor); city permit staff said it's about $74.","atx_chat")],
 "Round Rock":[
  ("Yes","$50","Permits required when replacing plumbing/gas/mechanical systems; standalone permit $50. Tank-to-tankless needs a gas piping chart.","rr_std"),
  ("Yes","$50","Standalone HVAC (mechanical) permit.","rr_std"),
@@ -161,7 +161,7 @@ for c,rows in data.items():
     wui=WUI[c][i] if c in WUI else WUI_NOTE.get(c,"")
     ans=short(p)
     SD={"Yes":"Yes, a permit is required","No":"No permit required (see conditions)","Depends":"It depends on the details",None:"Check with city"}[p]
-    desc=f"{P[i]} permit in {c}, TX: {SD}. Fee: {fee_txt(f)}. {"Source: city permit office email, Oct 16, 2026." if s in EMAIL else "With the city source link, checked "+D+"."}"
+    desc=f"{P[i]} permit in {c}, TX: {SD}. Fee: {fee_txt(f)}. {"Source: "+(EMAIL[s] if EMAIL[s].startswith("City of") else EMAIL[s][0].lower()+EMAIL[s][1:])+"." if s in EMAIL else "With the city source link, checked "+D+"."}"
     if p is None or f is None: gaps.append(f"{c} / {P[i]}: " + ", ".join(x for x,v in (("permit",p),("fee",f)) if v is None))
     lds=[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
       {"@type":"ListItem","position":1,"name":"Permit cheat sheet","item":BASE+"/"},

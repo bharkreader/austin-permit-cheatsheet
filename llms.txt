@@ -1,6 +1,6 @@
 # Texas Permit Guide (Austin-Area Residential Permit Cheat Sheet)
 
-> Free summary of whether common home projects need a building permit in Austin, Round Rock, Pflugerville and Cedar Park, Texas, with permit fees, wildfire (WUI) code rules, and the city source for every answer (a link, or a dated city permit office email). Sources last checked Oct 15, 2026. Informational only, not legal advice; confirm with the city before starting work.
+> Free summary of whether common home projects need a building permit in Austin, Round Rock, Pflugerville and Cedar Park, Texas, with permit fees, wildfire (WUI) code rules, and the city source for every answer (a link, or a dated city permit office email or chat). Sources last checked Oct 15, 2026. Informational only, not legal advice; confirm with the city before starting work.
 
 Projects covered for each city: water heater, HVAC replacement, roof replacement, fence, deck / patio cover, shed / accessory building, solar PV, in-ground pool, electrical panel upgrade, irrigation system. Where no clear city answer was found, the sheet says "Check with city" instead of guessing. Fees are base permit fees unless the notes list extra charges (like tech or plan-review fees). Most cities update fees each October; always confirm with the city. Areas outside city limits (ETJ / unincorporated Travis or Williamson County) follow different rules.
 
@@ -21,7 +21,7 @@ Key facts:
 
 One page per city and project, generated from the same data as the main table.
 
-- [Do I need a permit for a water heater replacement in Austin, TX?](https://txpermitguide.com/austin/water-heater/): Yes; fee Check with city
+- [Do I need a permit for a water heater replacement in Austin, TX?](https://txpermitguide.com/austin/water-heater/): Yes; fee About $74
 - [Do I need a permit for an HVAC replacement in Austin, TX?](https://txpermitguide.com/austin/hvac-replacement/): Yes; fee $74.05
 - [Do I need a permit for a roof replacement in Austin, TX?](https://txpermitguide.com/austin/roof-replacement/): Depends; fee $112.76 + $72.96
 - [Do I need a permit for a fence in Austin, TX?](https://txpermitguide.com/austin/fence/): Depends; fee $146.15
@@ -29,8 +29,8 @@ One page per city and project, generated from the same data as the main table.
 - [Do I need a permit for a shed or accessory building in Austin, TX?](https://txpermitguide.com/austin/shed/): Depends; fee Check with city
 - [Do I need a permit for solar panels in Austin, TX?](https://txpermitguide.com/austin/solar-panels/): Yes; fee $53.56 + $169.83 + $84.92
 - [Do I need a permit for an in-ground pool in Austin, TX?](https://txpermitguide.com/austin/in-ground-pool/): Yes; fee $146.15+
-- [Do I need a permit for an electrical panel upgrade in Austin, TX?](https://txpermitguide.com/austin/electrical-panel-upgrade/): Check with city; fee Check with city
-- [Do I need a permit for an irrigation system in Austin, TX?](https://txpermitguide.com/austin/irrigation-system/): Yes; fee Check with city
+- [Do I need a permit for an electrical panel upgrade in Austin, TX?](https://txpermitguide.com/austin/electrical-panel-upgrade/): Yes; fee $73.81 + about $220
+- [Do I need a permit for an irrigation system in Austin, TX?](https://txpermitguide.com/austin/irrigation-system/): Yes; fee About $74
 - [Do I need a permit for a water heater replacement in Round Rock, TX?](https://txpermitguide.com/round-rock/water-heater/): Yes; fee $50
 - [Do I need a permit for an HVAC replacement in Round Rock, TX?](https://txpermitguide.com/round-rock/hvac-replacement/): Yes; fee $50
 - [Do I need a permit for a roof replacement in Round Rock, TX?](https://txpermitguide.com/round-rock/roof-replacement/): No; fee n/a
